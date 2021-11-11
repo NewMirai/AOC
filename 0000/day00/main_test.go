@@ -20,7 +20,8 @@ func TestDay00(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got := solve(tc.input)
+		problem_input := tc.input
+		got := Solve(&problem_input)
 		if !reflect.DeepEqual(tc.want, got) {
 			t.Fatalf("expected: %v, got: %v", tc.want, got)
 		}

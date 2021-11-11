@@ -17,11 +17,11 @@ func ReadInput(f string) string {
 	return string(data)
 }
 
-// solve problem
-func solve(s string) int {
+// Solve problem
+func Solve(s *string) int {
 	var total int
 	var numbers []int
-	lines := strings.Split(strings.TrimSpace(s), "\n")
+	lines := strings.Split(strings.TrimSpace(*s), "\n")
 	// for i, line := range lines {
 	// 	fmt.Println("Line", i, ": ", line)
 	// }
@@ -41,5 +41,5 @@ func solve(s string) int {
 // main function
 func main() {
 	problem_input := ReadInput("input.txt")
-	fmt.Println(solve(problem_input))
+	fmt.Println(Solve(&problem_input))
 }
