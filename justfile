@@ -2,7 +2,7 @@ default:
 	@just --list
 
 download year day:
-	./bin/download -year {{year}} -day {{day}}
+	./bin/download --year {{year}} --day {{day}}
 	
 create year day:
 	mkdir -p {{year}}/day{{day}}

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+
+	flag "github.com/spf13/pflag"
 )
 
 // GetInput Make a request to AOC website
