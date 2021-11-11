@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestDay00Part1(t *testing.T) {
+func TestDay01Part1(t *testing.T) {
 	type TableTests struct {
 		input string
 		want  int
@@ -28,7 +28,7 @@ func TestDay00Part1(t *testing.T) {
 
 }
 
-func TestDay00Part2(t *testing.T) {
+func TestDay01Part2(t *testing.T) {
 	type TableTests struct {
 		input string
 		want  int
