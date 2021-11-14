@@ -85,8 +85,6 @@ func LowerAlpha() (map[byte]int, string) {
 	alpha_map := make(map[byte]int, 26)
 	for i := range p {
 		p[i] = 'a' + byte(i)
-	}
-	for i := range p {
 		alpha_map[p[i]] = i
 	}
 	return alpha_map, string(p)
