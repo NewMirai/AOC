@@ -18,8 +18,7 @@ func ReadInput(f string) string {
 }
 
 // Solve problem
-func Solve(s *string) int {
-	var total int
+func Solve(s *string) (total int) {
 	var numbers []int
 	lines := strings.Split(strings.TrimSpace(*s), "\n")
 	// for i, line := range lines {
