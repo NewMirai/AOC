@@ -17,39 +17,38 @@ func ReadInput(f string) string {
 	return string(data)
 }
 
-func Abs(n int64) int64 {
+func Abs(n int) int {
 	if n < 0 {
 		return -n
 	}
 	return n
 }
 
-func CumSum(n int64) (cumsum int64) {
-	var i int64
-	for i = 1; i <= n; i++ {
+func CumSum(n int) (cumsum int) {
+	for i := 1; i <= n; i++ {
 		cumsum += i
 	}
 	return cumsum
 }
 
 // Solve problem
-func Solve(s *string) (total int64) {
+func Solve(s *string) (total int) {
 	positions := strings.Split(strings.TrimSpace(*s), ",")
 	n := len(positions)
-	numbers := make([]int64, n)
+	numbers := make([]int, n)
 	for i, pos := range positions {
-		number, _ := strconv.ParseInt(pos, 10, 64)
+		number, _ := strconv.Atoi(pos)
 		numbers[i] = number
 	}
-	gridPos := make([][]int64, n)
+	gridPos := make([][]int, n)
 	for i := 0; i < n; i++ {
-		gridPos[i] = make([]int64, n)
+		gridPos[i] = make([]int, n)
 		for j := 0; j < n; j++ {
-			gridPos[i][j] = CumSum(Abs((numbers[i] - numbers[j])))
+			gridPos[i][j] = CumSum(Abs(numbers[i] - numbers[j]))
 		}
 	}
 	for _, row := range gridPos {
-		var currentMin int64
+		var currentMin int
 		for _, d := range row {
 			currentMin += d
 		}
