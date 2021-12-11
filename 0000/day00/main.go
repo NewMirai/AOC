@@ -8,13 +8,45 @@ import (
 	"strings"
 )
 
-// ReadInput of the problem
 func ReadInput(f string) string {
-	data, err := os.ReadFile(f)
-	if err != nil {
-		log.Fatal(err)
-	}
+	data, _ := os.ReadFile(f)
 	return string(data)
+}
+
+type Position struct {
+	x int
+	y int
+}
+
+func (p *Position) GetAdjacentPositions() []Position {
+	adj := make([]Position, 8)
+	adj[0] = Position{x: p.x, y: p.y - 1}
+	adj[1] = Position{x: p.x + 1, y: p.y - 1}
+	adj[2] = Position{x: p.x + 1, y: p.y}
+	adj[3] = Position{x: p.x + 1, y: p.y + 1}
+	adj[4] = Position{x: p.x, y: p.y + 1}
+	adj[5] = Position{x: p.x - 1, y: p.y + 1}
+	adj[6] = Position{x: p.x - 1, y: p.y}
+	adj[7] = Position{x: p.x - 1, y: p.y - 1}
+	return adj
+}
+
+type Grid struct {
+	grid map[Position]*Object
+}
+
+func (g *Grid) Display(nrow int, ncol int) {
+	for i := 0; i < nrow; i++ {
+		row := make([]int, ncol)
+		for j := 0; j < ncol; j++ {
+			row[j] = g.grid[Position{x: j, y: i}].value
+		}
+		fmt.Println(row)
+	}
+}
+
+type Object struct {
+	value int
 }
 
 // Solve problem
