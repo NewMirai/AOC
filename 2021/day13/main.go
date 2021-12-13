@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -25,15 +24,13 @@ type Fold struct {
 
 type FoldMap map[Position]struct{}
 
-func (fm FoldMap) FoldAlongX(x int, maxRow int, maxCol int, total *int) {
-	tX := maxCol - x + 1
+func (fm FoldMap) FoldAlongX(x int, total *int) {
 	for p := range fm {
-		if p.x >= x {
-			newPos := Position{x: p.x - tX, y: p.y}
-			if _, ok := fm[newPos]; !ok && p.x-tX >= 0 {
+		if p.x > x {
+			newVal := 2*x - p.x
+			newPos := Position{x: newVal, y: p.y}
+			if _, ok := fm[newPos]; !ok && newVal >= 0 {
 				fm[newPos] = struct{}{}
-			} else if _, ok := fm[newPos]; ok {
-				delete(fm, newPos)
 			}
 			delete(fm, p)
 		}
@@ -41,20 +38,43 @@ func (fm FoldMap) FoldAlongX(x int, maxRow int, maxCol int, total *int) {
 	*total = len(fm)
 }
 
-func (fm FoldMap) FoldAlongY(y int, maxRow int, maxCol int, total *int) {
-	tY := maxRow - y + 1
+func (fm FoldMap) FoldAlongY(y int, total *int) {
 	for p := range fm {
-		if p.y >= y {
-			newPos := Position{x: p.x, y: p.y - tY}
-			if _, ok := fm[newPos]; !ok && p.y-tY >= 0 {
+		if p.y > y {
+			newVal := 2*y - p.y
+			newPos := Position{x: p.x, y: newVal}
+			if _, ok := fm[newPos]; !ok && newVal >= 0 {
 				fm[newPos] = struct{}{}
-			} else if _, ok := fm[newPos]; ok {
-				delete(fm, newPos)
 			}
 			delete(fm, p)
 		}
 	}
 	*total = len(fm)
+}
+
+func (fm FoldMap) Display() {
+	var maxX, maxY int
+	for p := range fm {
+		if p.x > maxX {
+			maxX = p.x
+		}
+		if p.y > maxY {
+			maxY = p.y
+		}
+	}
+	for y := 0; y < maxY+1; y++ {
+		for x := 0; x < maxX+1; x++ {
+			pos := Position{x: x, y: y}
+			if _, ok := fm[pos]; ok {
+				fmt.Print("#")
+			} else {
+				fmt.Print(".")
+			}
+			if x == maxX {
+				fmt.Print("\n")
+			}
+		}
+	}
 }
 
 func Solve(s *string) (total int) {
@@ -63,16 +83,9 @@ func Solve(s *string) (total int) {
 	foldsInstructions := strings.Split(instructions[1], "\n")
 	m := make(FoldMap)
 	folds := make([]Fold, len(foldsInstructions))
-	maxRow, maxCol := math.MinInt, math.MinInt
 	for _, line := range coordinates {
 		var x, y int
 		fmt.Sscanf(line, "%d,%d", &x, &y)
-		if x > maxCol {
-			maxCol = x
-		}
-		if y > maxRow {
-			maxRow = y
-		}
 		p := Position{x: x, y: y}
 		if _, ok := m[p]; !ok {
 			m[p] = struct{}{}
@@ -85,19 +98,25 @@ func Solve(s *string) (total int) {
 		f := Fold{axe: axe, c: c}
 		folds[i] = f
 	}
+	c := 0
 	for _, f := range folds {
 		switch f.axe {
 		case "x":
-			m.FoldAlongX(f.c, maxRow, maxCol, &total)
+			m.FoldAlongX(f.c, &total)
 		case "y":
-			m.FoldAlongY(f.c, maxRow, maxCol, &total)
+			m.FoldAlongY(f.c, &total)
 		}
-		fmt.Println(total)
+		// Part 1
+		if c == 0 {
+			fmt.Println(total)
+		}
+		c++
 	}
+	m.Display()
 	return total
 }
 
 func main() {
-	problem_input := ReadInput("input.test")
+	problem_input := ReadInput("input.txt")
 	fmt.Println(Solve(&problem_input))
 }
