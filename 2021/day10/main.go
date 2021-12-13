@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"container/list"
 	"fmt"
 	"os"
@@ -8,27 +9,23 @@ import (
 	"strings"
 )
 
-// ReadInput of the problem
-func ReadInput(f string) string {
-	data, _ := os.ReadFile(f)
-	return string(data)
-}
-
-// Solve problem
-func Solve(s *string) (total int) {
-	lines := strings.Split(strings.TrimSpace(*s), "\n")
+func Solve(s string) (total int) {
+	// Read line by line
+	file, _ := os.Open("input.txt")
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
 	scores := make([]int, 0)
-	for _, line := range lines {
+	listChars := list.New()
+	for scanner.Scan() {
 		corrupted := false
-		listChars := list.New()
 	loop:
-		for _, c := range strings.TrimSpace(line) {
+		for _, c := range strings.TrimSpace(scanner.Text()) {
 			// Part 1
 			switch c {
 			case '(', '[', '{', '<':
 				listChars.PushBack(c)
 			case ')':
-				if listChars.Back().Value.(rune) != '(' {
+				if listChars.Back().Value.(rune) != c-1 {
 					total += 3
 					corrupted = true
 					break loop
@@ -36,7 +33,7 @@ func Solve(s *string) (total int) {
 					listChars.Remove(listChars.Back())
 				}
 			case ']':
-				if listChars.Back().Value.(rune) != '[' {
+				if listChars.Back().Value.(rune) != c-2 {
 					total += 57
 					corrupted = true
 					break loop
@@ -45,7 +42,7 @@ func Solve(s *string) (total int) {
 				}
 
 			case '>':
-				if listChars.Back().Value.(rune) != '<' {
+				if listChars.Back().Value.(rune) != c-2 {
 					total += 25137
 					corrupted = true
 					break loop
@@ -54,7 +51,7 @@ func Solve(s *string) (total int) {
 				}
 
 			case '}':
-				if listChars.Back().Value.(rune) != '{' {
+				if listChars.Back().Value.(rune) != c-2 {
 					total += 1197
 					corrupted = true
 					break loop
@@ -74,19 +71,18 @@ func Solve(s *string) (total int) {
 				'<': 4,
 			}
 			for e := listChars.Back(); e != nil; e = e.Prev() {
-				value := e.Value.(rune)
-				score = score*5 + m[value]
+				score = score*5 + m[e.Value.(rune)]
 			}
 			scores = append(scores, score)
 		}
+		listChars.Init()
 	}
 	sort.Ints(scores)
 	total = scores[len(scores)/2]
-	return total
+	return
 }
 
 // main function
 func main() {
-	problem_input := ReadInput("input.txt")
-	fmt.Println(Solve(&problem_input))
+	fmt.Println(Solve("input.txt"))
 }
