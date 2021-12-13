@@ -130,3 +130,7 @@ dmypy.json
 
 # GO binaries
 download
+
+# Misc
+*.svg
+*.prof
