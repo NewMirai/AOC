@@ -64,22 +64,19 @@ func Solve(s *string) (npaths int) {
 					visited: copyVisited,
 					twice:   "",
 				})
-			} else {
-				if cave.twice == "" && cave.name != "start" && cave.name != "end" {
-					Caves = append(Caves, Cave{
-						name:    el,
-						visited: cave.visited,
-						twice:   el,
-					})
-				}
+			} else if ok && cave.twice == "" && el != "start" && el != "end" {
+				Caves = append(Caves, Cave{
+					name:    el,
+					visited: cave.visited,
+					twice:   el,
+				})
 			}
 		}
-
 	}
 	return
 }
 
 func main() {
-	problem_input := ReadInput("input.txt")
+	problem_input := ReadInput("input.test")
 	fmt.Println(Solve(&problem_input))
 }
