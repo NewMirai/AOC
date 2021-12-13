@@ -134,8 +134,6 @@ func Solve(s *string) int {
 	// Part 1 for step < 100 {
 	for step > 0 {
 		g.Step()
-		fmt.Println("After step", step)
-		g.Display(n, n)
 		if g.CheckSync(n, n) {
 			break
 		}
