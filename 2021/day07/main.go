@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"math"
 	"os"
 	"strconv"
 	"strings"
 )
 
-// ReadInput of the problem
 func ReadInput(f string) string {
-	data, err := os.ReadFile(f)
-	if err != nil {
-		log.Fatal(err)
-	}
+	data, _ := os.ReadFile(f)
 	return string(data)
 }
 
@@ -24,43 +20,31 @@ func Abs(n int) int {
 	return n
 }
 
-func CumSum(n int) (cumsum int) {
-	for i := 1; i <= n; i++ {
-		cumsum += i
-	}
-	return cumsum
-}
+func CostF(n int) int { return n * (n + 1) / 2 }
 
-// Solve problem
-func Solve(s *string) (total int) {
+func Solve(s *string) int {
 	positions := strings.Split(strings.TrimSpace(*s), ",")
 	n := len(positions)
 	numbers := make([]int, n)
+	total := math.MaxInt
 	for i, pos := range positions {
 		number, _ := strconv.Atoi(pos)
 		numbers[i] = number
 	}
-	gridPos := make([][]int, n)
-	for i := 0; i < n; i++ {
-		gridPos[i] = make([]int, n)
-		for j := 0; j < n; j++ {
-			gridPos[i][j] = CumSum(Abs(numbers[i] - numbers[j]))
+	for _, num := range numbers {
+		fuel := 0
+		for _, number := range numbers {
+			cost := CostF(Abs(num - number))
+			fuel += cost
 		}
-	}
-	for _, row := range gridPos {
-		var currentMin int
-		for _, d := range row {
-			currentMin += d
-		}
-		if total == 0 || currentMin < total {
-			total = currentMin
+		if fuel < total {
+			total = fuel
 		}
 	}
 	return total
 }
 
-// main function
 func main() {
-	problem_input := ReadInput("input.test")
+	problem_input := ReadInput("input.txt")
 	fmt.Println(Solve(&problem_input))
 }
