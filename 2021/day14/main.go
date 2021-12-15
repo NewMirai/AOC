@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -20,59 +20,43 @@ func Solve(s *string) (total int) {
 	for _, pairRule := range strings.Split(pairsRules, "\n") {
 		rule := strings.Split(pairRule, " -> ")
 		left, right := rule[0], rule[1]
-		if _, ok := m[left]; !ok {
-			m[left] = right
-		}
+		m[left] = right
+	}
+	pairsCounter := make(map[string]int)
+	for i := 1; i < len(polymer); i++ {
+		previous := i - 1
+		pair := polymer[previous : i+1]
+		pairsCounter[pair]++
+
 	}
 	step := 0
-	for step < 10 {
-		pairs := make([]string, 0)
-		for i := 1; i < len(polymer); i++ {
-			previous := i - 1
-			pair := polymer[previous : i+1]
-			pairs = append(pairs, pair)
+	charCounter := make(map[string]int)
+	// Part 1
+	//for step < 10 {
+	for step < 40 {
+		updateCounter := make(map[string]int)
+		updateCharCounter := make(map[string]int)
+		for k, v := range pairsCounter {
+			k1, k2 := string(k[0])+m[k], m[k]+string(k[1])
+			updateCounter[k1] += v
+			updateCounter[k2] += v
 
+			updateCharCounter[string(k[0])] += v
+			updateCharCounter[m[k]] += v
 		}
-		n := len(pairs)
-		for i, pair := range pairs {
-			if ie, ok := m[pair]; ok {
-				if i == n-1 {
-					pairs[i] = string(pair[0]) + ie + string(pair[1])
-				} else {
-					pairs[i] = string(pair[0]) + ie
-				}
-			}
-		}
-		var newPolymer string
-		for _, part := range pairs {
-			newPolymer += part
-		}
+		pairsCounter = updateCounter
+		charCounter = updateCharCounter
 		step++
-		polymer = newPolymer
 	}
-	cb := strings.Count(polymer, "B")
-	cc := strings.Count(polymer, "C")
-	ch := strings.Count(polymer, "H")
-	cn := strings.Count(polymer, "N")
-	counts := make([]int, 4)
-	counts[0] = cb
-	counts[1] = cc
-	counts[2] = ch
-	counts[3] = cn
-	min, max := math.MaxInt, math.MinInt
-	for _, count := range counts {
-		if count < min {
-			min = count
-		}
-		if count > max {
-			max = count
-		}
+	charCounter[string(polymer[len(polymer)-1])]++
+	counts := make([]int, 0)
+	for _, v := range charCounter {
+		counts = append(counts, v)
 	}
-	total = max - min
-	return total
+	sort.Ints(counts)
+	return counts[len(counts)-1] - counts[0]
 }
 
-// main function
 func main() {
 	problem_input := ReadInput("input.txt")
 	fmt.Println(Solve(&problem_input))
