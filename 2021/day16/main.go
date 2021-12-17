@@ -12,13 +12,15 @@ func ReadInput(f string) string {
 	return string(data)
 }
 
+func readBinary(s string, start int, end int) int {
+	var number int
+	fmt.Sscanf(s[start:end], "%b", &number)
+	return number
+}
+
 func DecodeHex(s string, total *int) {
-	var (
-		packetVersion int
-		typeID        int
-	)
-	fmt.Sscanf(s[0:3], "%b", &packetVersion)
-	fmt.Sscanf(s[3:6], "%b", &typeID)
+	packetVersion := readBinary(s, 0, 3)
+	typeID := readBinary(s, 3, 6)
 	packetType := CheckID(typeID)
 	if packetType == "literal" {
 		DecodeLiteral(s, packetVersion, typeID, total)
@@ -43,10 +45,16 @@ func DecodeOperator(s string, version int, typeID int, total *int) {
 	fmt.Sscanf(subLengthS, "%b", &subLength)
 	switch typeID {
 	case 6:
-		sCount := 0
-
+		c := 0
+		for c < 2 {
+			switch c {
+			case 0:
+				packet := s[7+lBitNum : 7+lBitNum+11]
+				DecodeHex(packet, total)
+			}
+			c++
+		}
 	}
-	runtime.Breakpoint()
 }
 
 func GetLengthBit(ltID string) int {
@@ -96,6 +104,7 @@ func Solve(s *string) (total int) {
 	for _, c := range raw {
 		rawDecoded += hex2Binary[string(c)]
 	}
+	runtime.Breakpoint()
 	DecodeHex(rawDecoded, &total)
 	return total
 }
